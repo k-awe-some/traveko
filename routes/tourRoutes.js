@@ -8,6 +8,7 @@ module.exports = app => {
   app.get("/api/v1/tours", (req, res) => {
     res.status(200).json({
       status: "success",
+      requestedAt: req.requestTime,
       results: tours.length,
       data: { tours }
     });
@@ -20,12 +21,14 @@ module.exports = app => {
     if (!tour) {
       return res.status(404).json({
         status: "failure",
+        requestedAt: req.requestTime,
         message: "Invalid ID"
       });
     }
 
     res.status(200).json({
       status: "success",
+      requestedAt: req.requestTime,
       data: { tour }
     });
   });
