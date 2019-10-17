@@ -17,6 +17,8 @@ app.use(express.json());
 
 /*** ROUTE HANLDERS ***/
 require("./routes/tourRoutes")(app);
+require("./routes/userRoutes")(app);
+require("./routes/reviewRoutes")(app);
 
 /*** APP LISTENER ***/
 app.listen(3000, () => console.log("🚀 Server is running on port 3000"));
