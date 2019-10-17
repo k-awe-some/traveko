@@ -1,33 +1,6 @@
-const fs = require("fs");
+const tourController = require("../controllers/tourController");
 
 module.exports = app => {
-  const tours = JSON.parse(
-    fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-  );
-
-  app.get("/api/v1/tours", (req, res) =>
-    res.status(200).json({
-      status: "success",
-      requestedAt: req.requestTime,
-      results: tours.length,
-      data: { tours }
-    })
-  );
-
-  app.get("/api/v1/tours/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const tour = tours.find(tour => tour.id === id);
-
-    tour
-      ? res.status(200).json({
-          status: "success",
-          requestedAt: req.requestTime,
-          data: { tour }
-        })
-      : res.status(404).json({
-          status: "failure",
-          requestedAt: req.requestTime,
-          message: "Invalid ID"
-        });
-  });
+  app.get("/api/v1/tours", tourController.getAllTours);
+  app.get("/api/v1/tours/:id", tourController.getTour);
 };
