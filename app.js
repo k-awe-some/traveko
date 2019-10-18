@@ -1,24 +1,21 @@
-const fs = require("fs");
-const express = require("express");
-const morgan = require("morgan");
-// const bodyParser = require("body-parser");
-
-const app = express();
-
+"use strict";
+exports.__esModule = true;
+var express_1 = require("express");
+var morgan_1 = require("morgan");
+// import * as tourRoutes from "./routes/tourRoutes";
+// import * as userRoutes from "./routes/userRoutes";
+var reviewRoutes_1 = require("./routes/reviewRoutes");
+var app = express_1["default"]();
 /*** MIDDLEWARES ***/
-app.use(morgan("dev"));
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
+app.use(morgan_1["default"]("dev"));
+app.use(function (req, res, next) {
+    req.requestTime = new Date().toISOString();
+    next();
 });
-
-app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express_1["default"].json());
 /*** ROUTE HANLDERS ***/
-require("./routes/tourRoutes")(app);
-require("./routes/userRoutes")(app);
-require("./routes/reviewRoutes")(app);
-
+// tourRoutes(app);
+// userRoutes(app);
+reviewRoutes_1["default"](app);
 /*** APP LISTENER ***/
-app.listen(3000, () => console.log("🚀 Server is running on port 3000"));
+app.listen(3000, function () { return console.log("🚀 Server is running on port 3000"); });

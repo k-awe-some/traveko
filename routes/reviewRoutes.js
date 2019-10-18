@@ -1,6 +1,8 @@
-const reviewController = require("../controllers/reviewController");
-
-module.exports = app => {
-  app.get("/api/v1/reviews", reviewController.getAllReviews);
-  app.get("/api/v1/reviews/:id", reviewController.getReview);
+"use strict";
+exports.__esModule = true;
+var reviewController_1 = require("../controllers/reviewController");
+var reviewRoutes = function (app) {
+    app.get("/api/v1/reviews", reviewController_1.getAllReviews);
+    app.get("/api/v1/reviews/:id", reviewController_1.getReview);
 };
+exports["default"] = reviewRoutes;
