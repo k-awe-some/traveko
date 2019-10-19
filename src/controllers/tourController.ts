@@ -5,7 +5,16 @@ import Tour from "../models/tourModel";
 // GET requests
 export const getAllTours = async (req: Request, res: Response) => {
   try {
-    const tours = await Tour.find();
+    // excludes fields; builds query
+    const queryObject = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach(el => delete queryObject[el]);
+    const query = Tour.find(queryObject);
+
+    // executes query
+    const tours = await query;
+
+    // sends response
     res.status(200).json({
       status: "success",
       results: tours.length,
