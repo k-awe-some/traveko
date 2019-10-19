@@ -4,10 +4,10 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "start": "node build/server.js",
     "dev:build": "tsc -w",
-    "dev:run": "nodemon build/server.js",
-    "dev": "concurrently yarn:dev:*"
+    "dev:run": "SET NODE_ENV=development&& nodemon build/server.js",
+    "start:dev": "concurrently yarn:dev:*",
+    "start:prod": "SET NODE_ENV=production&& nodemon build/server.js"
   },
   "dependencies": {
     "@types/express": "^4.17.1",
@@ -15,6 +15,7 @@
     "@types/node": "^12.11.1",
     "body-parser": "^1.19.0",
     "concurrently": "^5.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "nodemon": "^1.19.4"
