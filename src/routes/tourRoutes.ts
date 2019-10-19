@@ -1,7 +1,8 @@
 import {
   getAllTours,
   getTour,
-  createTour
+  createTour,
+  updateTour
 } from "../controllers/tourController";
 
 const tourRoutes = (app: any) => {
@@ -9,6 +10,7 @@ const tourRoutes = (app: any) => {
   app.get("/api/v1/tours", getAllTours);
   app.get("/api/v1/tours/:id", getTour);
   app.post("/api/v1/tours", createTour);
+  app.patch("/api/v1/tours/:id", updateTour);
 };
 
 export default tourRoutes;
