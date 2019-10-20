@@ -5,7 +5,9 @@ import {
   getTour,
   createTour,
   updateTour,
-  deleteTour
+  deleteTour,
+  getTourStats,
+  getMonthlyPlan
 } from "../controllers/tourController";
 
 const tourRoutes = (app: any) => {
@@ -22,6 +24,10 @@ const tourRoutes = (app: any) => {
 
   // aliases
   app.route("/api/v1/tours/top-5-tours").get(aliasTopTours, getAllTours);
+
+  // stats
+  app.route("/api/v1/tours/tour-stats").get(getTourStats);
+  app.route("/api/v1/tours/monthly-plan/:year").get(getMonthlyPlan);
 };
 
 export default tourRoutes;
