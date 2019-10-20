@@ -1,13 +1,14 @@
-const fs = require('fs')
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
-const Tour = require("../../src/models/tourModel");
+const fs = require("fs");
+const mongoose = require("mongoose");
 
+const dotenv = require("dotenv");
 dotenv.config({ path: `${__dirname}/../../.env` });
-import app from "./app";
+const Tour = require("../../build/models/tourModel");
 
-const DB = process.env.MONGODB.replace("<password>", process.env
-  .MONGODB_PASSWORD as string);
+const DB = process.env.MONGODB.replace(
+  "<password>",
+  process.env.MONGODB_PASSWORD
+);
 
 mongoose
   .connect(DB, {
@@ -18,14 +19,12 @@ mongoose
   })
   .then(() => {
     console.log("🚀 Database successfully connected");
-  });
+  })
+  .catch(error => console.log("💥", error));
 
 // READ JSON FILE
 const tours = JSON.parse(
-  fs.readFileSync(
-    `${__dirname}/tours-simple.json`,
-    encodeURI("")
-  )
+  fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8")
 );
 
 // IMPORT DATA INTO DB
@@ -51,7 +50,7 @@ const deleteData = async () => {
 };
 
 // RUN ON COMMAND CONDITIONS
-console.log(process.argv);
+// console.log(process.argv);
 if (process.argv[2] === "--import") {
   importData();
 } else if (process.argv[2] === "--delete") {
