@@ -1,4 +1,6 @@
+import express from "express";
 import {
+  aliasTopTours,
   getAllTours,
   getTour,
   createTour,
@@ -7,12 +9,19 @@ import {
 } from "../controllers/tourController";
 
 const tourRoutes = (app: any) => {
-  // app.param("id", checkTourID); // no longer needed but was a good example on how to run this middleware in this case
-  app.get("/api/v1/tours", getAllTours);
-  app.get("/api/v1/tours/:id", getTour);
-  app.post("/api/v1/tours", createTour);
-  app.patch("/api/v1/tours/:id", updateTour);
-  app.delete("/api/v1/tours/:id", deleteTour);
+  app
+    .route("/api/v1/tours")
+    .get(getAllTours)
+    .post(createTour);
+
+  app
+    .route("/api/v1/tours/:id")
+    .get(getTour)
+    .patch(updateTour)
+    .delete(deleteTour);
+
+  // aliases
+  app.route("/api/v1/tours/top-5-tours").get(aliasTopTours, getAllTours);
 };
 
 export default tourRoutes;
