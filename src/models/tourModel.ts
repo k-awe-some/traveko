@@ -105,11 +105,16 @@ tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction): void {
 
 tourSchema.post(/^find/, function(
   this: TourDoc,
-  docs: TourDoc,
+  docs,
   next: NextFunction
 ): void {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-  console.log(docs);
+  next();
+});
+
+// Mongoose Middlewares: Aggregation
+tourSchema.pre("aggregate", function(next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
 
