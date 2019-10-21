@@ -6,6 +6,7 @@ interface TourDoc extends Document {
   slug: string;
   name: string;
   duration: number;
+  start: number;
 }
 
 const tourSchema = new mongoose.Schema(
@@ -62,7 +63,11 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
       select: false
     },
-    startDates: [Date]
+    startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false
+    }
   },
   { toJSON: { virtuals: true } }
 );
@@ -75,7 +80,7 @@ tourSchema.virtual("durationWeeks").get(function(this: TourDoc) {
 
 // Mongoose Middlewares: Document
 // pre save hook: runs before .save() and .create()
-tourSchema.pre("save", function(this: TourDoc, next: NextFunction) {
+tourSchema.pre("save", function(this: TourDoc, next: NextFunction): void {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
@@ -88,6 +93,25 @@ tourSchema.pre("save", function(this: TourDoc, next: NextFunction) {
 //   console.log(doc);
 //   next();
 // });
+
+// Mongoose Middlewares: Query
+// @ts-ignore
+tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction): void {
+  // @ts-ignore
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function(
+  this: TourDoc,
+  docs: TourDoc,
+  next: NextFunction
+): void {
+  console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+  console.log(docs);
+  next();
+});
 
 const Tour = mongoose.model("Tour", tourSchema);
 
