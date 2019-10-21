@@ -1,10 +1,12 @@
 import mongoose, { Document } from "mongoose";
 import { NextFunction } from "express";
 import slugify from "slugify";
+import validator from "validator";
 
 interface TourDoc extends Document {
   slug: string;
   name: string;
+  price: number;
   duration: number;
   start: number;
 }
@@ -15,7 +17,13 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, "A tour must have a name"],
       unique: true,
-      trim: true
+      trim: true,
+      maxlength: [40, "A tour name must not exceed 40 characters"],
+      minlength: [10, "A tour name must have at least 10 characters"]
+      // validate: [
+      //   validator.isAlpha,
+      //   "Tour name must not contain special characters"
+      // ]
     },
     slug: String,
     duration: {
@@ -28,11 +36,17 @@ const tourSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      required: [true, "A tour must specify a difficulty level"]
+      required: [true, "A tour must specify a difficulty level"],
+      enum: {
+        values: ["easy", "medium", "difficult"],
+        message: "Difficulty is either easy, medium or difficult"
+      }
     },
     ratingsAverage: {
       type: Number,
-      default: 4.5
+      default: 4.5,
+      min: [1, "Rating must be higher than 1.0"],
+      max: [5, "Rating must be lower than 5.0"]
     },
     ratingsQuantity: {
       type: Number,
@@ -42,7 +56,17 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, "A tour must have a price"]
     },
-    discountPrice: Number,
+    discountPrice: {
+      type: Number,
+      validate: {
+        validator: function(this: TourDoc, val: number): boolean {
+          // only work on creating new, NOT on updates
+          return val < this.price;
+        },
+        // @ts-ignore
+        message: "Discount price ({VALUE}) must be lower than regular price"
+      }
+    },
     summary: {
       type: String,
       trim: true,
@@ -95,7 +119,6 @@ tourSchema.pre("save", function(this: TourDoc, next: NextFunction): void {
 // });
 
 // Mongoose Middlewares: Query
-// @ts-ignore
 tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction): void {
   // @ts-ignore
   this.find({ secretTour: { $ne: true } });
@@ -105,7 +128,7 @@ tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction): void {
 
 tourSchema.post(/^find/, function(
   this: TourDoc,
-  docs,
+  docs: TourDoc,
   next: NextFunction
 ): void {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
@@ -113,7 +136,8 @@ tourSchema.post(/^find/, function(
 });
 
 // Mongoose Middlewares: Aggregation
-tourSchema.pre("aggregate", function(next) {
+tourSchema.pre("aggregate", function(this: TourDoc, next: NextFunction) {
+  // @ts-ignore
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
