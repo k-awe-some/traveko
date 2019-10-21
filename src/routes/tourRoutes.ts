@@ -11,6 +11,13 @@ import {
 } from "../controllers/tourController";
 
 const tourRoutes = (app: any) => {
+  // aliases
+  app.route("/api/v1/tours/top-5-tours").get(aliasTopTours, getAllTours);
+
+  // stats
+  app.route("/api/v1/tours/tour-stats").get(getTourStats);
+  app.route("/api/v1/tours/monthly-plan/:year").get(getMonthlyPlan);
+
   app
     .route("/api/v1/tours")
     .get(getAllTours)
@@ -21,13 +28,6 @@ const tourRoutes = (app: any) => {
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
-
-  // aliases
-  app.route("/api/v1/tours/top-5-tours").get(aliasTopTours, getAllTours);
-
-  // stats
-  app.route("/api/v1/tours/tour-stats").get(getTourStats);
-  app.route("/api/v1/tours/monthly-plan/:year").get(getMonthlyPlan);
 };
 
 export default tourRoutes;
