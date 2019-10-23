@@ -2,6 +2,7 @@ import fs from "fs";
 import { Request, Response, NextFunction } from "express";
 import Tour from "../models/tourModel";
 import APIFeatures from "../utils/APIFeatures";
+import AppError from "../utils/AppError";
 
 export const aliasTopTours = (
   req: Request,
@@ -14,9 +15,15 @@ export const aliasTopTours = (
   next();
 };
 
+// @ts-ignore
+const catchAsync = fn => {
+  return (req: Request, res: Response, next: NextFunction) =>
+    fn(req, res, next).catch((err: AppError) => next(err));
+};
+
 // GET requests
-export const getAllTours = async (req: Request, res: Response) => {
-  try {
+export const getAllTours = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     // BUILDING QUERY (by chaining all the methods)
     const features = new APIFeatures(Tour.find(), req.query)
       .filter()
@@ -33,48 +40,33 @@ export const getAllTours = async (req: Request, res: Response) => {
       results: tours.length,
       data: { tours }
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
 
-export const getTour = async (req: Request, res: Response) => {
-  try {
+export const getTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const tour = await Tour.findById(req.params.id);
     res.status(200).json({
       status: "success",
       data: { tour }
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
 
 // POST requests
-export const createTour = async (req: Request, res: Response) => {
-  try {
+export const createTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const newTour = await Tour.create(req.body);
     res.status(201).json({
       status: "success",
       data: { tour: newTour }
     });
-  } catch (error) {
-    res.status(400).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
 
 // PATCH requests
-export const updateTour = async (req: Request, res: Response) => {
-  try {
+export const updateTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
@@ -83,33 +75,23 @@ export const updateTour = async (req: Request, res: Response) => {
       status: "success",
       data: { tour }
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
 
 // DELETE requests
-export const deleteTour = async (req: Request, res: Response) => {
-  try {
+export const deleteTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     await Tour.findByIdAndDelete(req.params.id);
     res.status(204).json({
       status: "success",
       data: null
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
 
 // AGGREGATION PIPELINE
-export const getTourStats = async (req: Request, res: Response) => {
-  try {
+export const getTourStats = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const stats = await Tour.aggregate([
       { $match: { ratingsAverage: { $gte: 4.5 } } },
       {
@@ -131,16 +113,11 @@ export const getTourStats = async (req: Request, res: Response) => {
       status: "success",
       data: { stats }
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
 
-export const getMonthlyPlan = async (req: Request, res: Response) => {
-  try {
+export const getMonthlyPlan = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const year = Number(req.params.year);
     const plan = await Tour.aggregate([
       // $unwind: returns one element for each of the specified array field
@@ -169,10 +146,5 @@ export const getMonthlyPlan = async (req: Request, res: Response) => {
       status: "success",
       data: { plan }
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "failure",
-      message: error
-    });
   }
-};
+);
