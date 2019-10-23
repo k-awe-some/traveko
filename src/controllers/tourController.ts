@@ -46,10 +46,13 @@ export const getAllTours = catchAsync(
 export const getTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const tour = await Tour.findById(req.params.id);
-    res.status(200).json({
-      status: "success",
-      data: { tour }
-    });
+
+    tour
+      ? res.status(200).json({
+          status: "success",
+          data: { tour }
+        })
+      : next(new AppError("No tour found with that ID", 404));
   }
 );
 
@@ -71,21 +74,25 @@ export const updateTour = catchAsync(
       new: true,
       runValidators: true
     });
-    res.status(200).json({
-      status: "success",
-      data: { tour }
-    });
+    tour
+      ? res.status(200).json({
+          status: "success",
+          data: { tour }
+        })
+      : next(new AppError("No tour found with that ID", 404));
   }
 );
 
 // DELETE requests
 export const deleteTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    await Tour.findByIdAndDelete(req.params.id);
-    res.status(204).json({
-      status: "success",
-      data: null
-    });
+    const tour = await Tour.findByIdAndDelete(req.params.id);
+    tour
+      ? res.status(204).json({
+          status: "success",
+          data: null
+        })
+      : next(new AppError("No tour found with that ID", 404));
   }
 );
 
