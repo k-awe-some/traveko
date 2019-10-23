@@ -17,7 +17,6 @@ export const aliasTopTours = (
 // GET requests
 export const getAllTours = async (req: Request, res: Response) => {
   try {
-    console.log(req.query);
     // BUILDING QUERY (by chaining all the methods)
     const features = new APIFeatures(Tour.find(), req.query)
       .filter()
