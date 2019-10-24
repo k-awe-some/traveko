@@ -4,6 +4,7 @@ import Tour from "../models/tourModel";
 import APIFeatures from "../utils/APIFeatures";
 import AppError from "../utils/AppError";
 import { Err } from "./controllers.types";
+import catchAsync from "../utils/catchAsync";
 
 export const aliasTopTours = (
   req: Request,
@@ -14,12 +15,6 @@ export const aliasTopTours = (
   req.query.sort = "-ratingsAverage,price";
   req.query.fields = "name,price,ratingsAverage,summary,difficulty";
   next();
-};
-
-// @ts-ignore
-const catchAsync = fn => {
-  return (req: Request, res: Response, next: NextFunction) =>
-    fn(req, res, next).catch((err: Err) => next(err));
 };
 
 // GET requests
