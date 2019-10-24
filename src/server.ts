@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+
+process.on("uncaughtException", err => {
+  console.log(err.name, err.message);
+  console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
+  process.exit(1);
+});
+
 dotenv.config({ path: `${__dirname}/../.env` });
 import app from "./app";
 
