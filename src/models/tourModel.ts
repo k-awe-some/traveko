@@ -2,14 +2,7 @@ import mongoose, { Document } from "mongoose";
 import { NextFunction } from "express";
 import slugify from "slugify";
 import validator from "validator";
-
-interface TourDoc extends Document {
-  slug: string;
-  name: string;
-  price: number;
-  duration: number;
-  start: number;
-}
+import { TourDoc } from "./models.types";
 
 const tourSchema = new mongoose.Schema(
   {

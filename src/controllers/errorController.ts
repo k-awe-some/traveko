@@ -1,24 +1,25 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
+import { Err } from "./controllers.types";
 
-const handleCastErrorDB = err => {
+const handleCastErrorDB = (err: Err) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
 };
 
-const handleDuplicateFieldsDB = err => {
+const handleDuplicateFieldsDB = (err: Err) => {
   const value = err.errmsg.match(/(["'])(?:(?=(\\?))\2.)*?\1/);
   const message = `Duplicate field value: ${value[0]}. Please use another value.`;
   return new AppError(message, 400);
 };
 
-const handleValidationErrorDB = err => {
-  const errors = Object.values(err.errors).map(error => error.message);
+const handleValidationErrorDB = (err: Err) => {
+  const errors = Object.values(err.errors).map((error: Err) => error.message);
   const message = `Invalid input data. ${errors.join(". ")}.`;
   return new AppError(message, 400);
 };
 
-const sendErrorDev = (err: AppError, res: Response) => {
+const sendErrorDev = (err: Err, res: Response) => {
   res.status(err.statusCode).json({
     status: err.status,
     error: err,
@@ -27,7 +28,7 @@ const sendErrorDev = (err: AppError, res: Response) => {
   });
 };
 
-const sendErrorProd = (err: AppError, res: Response) => {
+const sendErrorProd = (err: Err, res: Response) => {
   err.isOperational
     ? res.status(err.statusCode).json({
         status: err.status,
@@ -40,7 +41,7 @@ const sendErrorProd = (err: AppError, res: Response) => {
 };
 
 export const globalErrorHandler = (
-  err: AppError,
+  err: Err,
   req: Request,
   res: Response,
   next: NextFunction
@@ -51,7 +52,7 @@ export const globalErrorHandler = (
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    let error = { ...err };
+    let error = { ...err } as Err;
     if (error.name === "CastError") error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === "ValidationError")

@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { Err } from "./controllers/controllers.types";
 
-process.on("uncaughtException", err => {
+(process as NodeJS.EventEmitter).on("uncaughtException", err => {
   console.log(err.name, err.message);
   console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
   process.exit(1);
@@ -32,7 +33,7 @@ const server = app.listen(port, () =>
 );
 
 /*** GLOBAL unhandledRejection HANDLER ***/
-process.on("unhandledRejection", err => {
+(process as NodeJS.EventEmitter).on("unhandledRejection", err => {
   console.log(err.name, err.message);
   console.log("UNHANDLED REJECTION! 💥  Shutting down...");
   server.close(() => process.exit(1));

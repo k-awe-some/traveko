@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import Tour from "../models/tourModel";
 import APIFeatures from "../utils/APIFeatures";
 import AppError from "../utils/AppError";
+import { Err } from "./controllers.types";
 
 export const aliasTopTours = (
   req: Request,
@@ -18,7 +19,7 @@ export const aliasTopTours = (
 // @ts-ignore
 const catchAsync = fn => {
   return (req: Request, res: Response, next: NextFunction) =>
-    fn(req, res, next).catch((err: AppError) => next(err));
+    fn(req, res, next).catch((err: Err) => next(err));
 };
 
 // GET requests

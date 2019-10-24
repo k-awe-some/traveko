@@ -9,7 +9,8 @@ import {
   getMonthlyPlan
 } from "../controllers/tourController";
 
-const tourRoutes = (app: any) => {
+// @ts-ignore
+const tourRoutes = app => {
   // aliases
   app.route("/api/v1/tours/top-5-tours").get(aliasTopTours, getAllTours);
 
