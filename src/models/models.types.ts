@@ -9,6 +9,7 @@ export interface TourDoc extends Document {
 }
 
 export interface UserDoc extends Document {
-  password: string;
-  passwordConfirm: string;
+  password?: string;
+  passwordConfirm?: string;
+  correctPassword?: any; // instance method
 }

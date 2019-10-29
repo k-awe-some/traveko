@@ -1,28 +1,32 @@
 import fs from "fs";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import User from "../models/userModel";
+import catchAsync from "../utils/catchAsync";
+import AppError from "../utils/AppError";
 
-const users = JSON.parse(
-  fs.readFileSync(`${__dirname}/../../dev-data/data/users.json`, encodeURI(""))
-);
+// const users = JSON.parse(
+//   fs.readFileSync(`${__dirname}/../../dev-data/data/users.json`, encodeURI(""))
+// );
 
-export const getAllUsers = (req: Request, res: Response) =>
+export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const users = await User.find();
+
   res.status(200).json({
     status: "success",
     results: users.length,
     data: { users }
   });
+});
 
-export const getUser = (req: Request, res: Response) => {
-  const id: string = req.params.id;
-  const user = users.find((user: any) => user._id === id);
+export const getUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.findById(req.params.id);
 
-  user
-    ? res.status(200).json({
-        status: "success",
-        data: { user }
-      })
-    : res.status(404).json({
-        status: "failure",
-        message: "Invalid user ID"
-      });
-};
+    user
+      ? res.status(200).json({
+          status: "success",
+          data: { user }
+        })
+      : next(new AppError("No user found with that ID", 404));
+  }
+);
