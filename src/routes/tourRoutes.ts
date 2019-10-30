@@ -8,6 +8,7 @@ import {
   getTourStats,
   getMonthlyPlan
 } from "../controllers/tourController";
+import { protect } from "../controllers/authController";
 
 // @ts-ignore
 const tourRoutes = app => {
@@ -20,7 +21,7 @@ const tourRoutes = app => {
 
   app
     .route("/api/v1/tours")
-    .get(getAllTours)
+    .get(protect, getAllTours)
     .post(createTour);
 
   app
