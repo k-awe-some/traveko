@@ -11,9 +11,14 @@ export interface TourDoc extends Document {
 export interface UserDoc extends Document {
   password?: string;
   passwordConfirm?: string;
-  correctPassword?: any; // instance method
-  changedPasswordAfter?: any; // instance method
+  passwordResetToken?: string;
+  passwordResetExpires?: number;
+  /****** instance methods ******/
+  correctPassword?: any;
+  changedPasswordAfter?: any;
   passwordChangedAt?: any;
+  createPasswordResetToken?: any;
+  /***^^^ instance methods ^^^***/
 }
 export interface DecodedToken extends UserDoc {
   id: string;
