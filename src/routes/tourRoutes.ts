@@ -8,7 +8,7 @@ import {
   getTourStats,
   getMonthlyPlan
 } from "../controllers/tourController";
-import { protect } from "../controllers/authController";
+import { protect, restrictedTo } from "../controllers/authController";
 
 // @ts-ignore
 const tourRoutes = app => {
@@ -28,7 +28,7 @@ const tourRoutes = app => {
     .route("/api/v1/tours/:id")
     .get(getTour)
     .patch(updateTour)
-    .delete(deleteTour);
+    .delete(protect, restrictedTo("admin", "lead-guide"), deleteTour);
 };
 
 export default tourRoutes;

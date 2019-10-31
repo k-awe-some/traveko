@@ -14,7 +14,8 @@ export const signup = catchAsync(
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
-      passwordChangedAt: req.body.passwordChangedAt
+      passwordChangedAt: req.body.passwordChangedAt,
+      role: req.body.role
     });
 
     const token = signToken(newUser._id);
@@ -79,7 +80,19 @@ export const protect = catchAsync(
 
     // IF ALL PASSED --> GRANT ACCESS TO PROTECTED ROUTES
     // @ts-ignore
-    req.user = currentUser;
+    req.user = currentUser as UserDoc;
     next();
   }
 );
+
+export const restrictedTo = (...roles: Array<string>) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    // @ts-ignore
+    if (!roles.includes(req.user.role))
+      return next(
+        new AppError("You do not have permission to perform this action", 403)
+      );
+
+    next();
+  };
+};
