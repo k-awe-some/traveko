@@ -12,4 +12,11 @@ export interface UserDoc extends Document {
   password?: string;
   passwordConfirm?: string;
   correctPassword?: any; // instance method
+  changedPasswordAfter?: any; // instance method
+  passwordChangedAt?: any;
+}
+export interface DecodedToken extends UserDoc {
+  id: string;
+  iat: number;
+  exp: number;
 }

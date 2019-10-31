@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, "Please confirm your passwor"],
+    required: [true, "Please confirm your password"],
     validate: {
       validator: function(this: UserDoc, val: string): boolean {
         return val === this.password;
@@ -59,8 +59,10 @@ userSchema.methods.correctPassword = async function(
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-// @ts-ignore
-userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+userSchema.methods.changedPasswordAfter = function(
+  this: UserDoc,
+  JWTTimestamp: number
+) {
   if (this.passwordChangedAt) {
     const passwordChangedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,

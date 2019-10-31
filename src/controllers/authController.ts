@@ -5,7 +5,7 @@ import User from "../models/userModel";
 import catchAsync from "../utils/catchAsync";
 import signToken from "../utils/signToken";
 import AppError from "../utils/AppError";
-import { UserDoc } from "../models/models.types";
+import { UserDoc, DecodedToken } from "../models/models.types";
 
 export const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -63,19 +63,22 @@ export const protect = catchAsync(
 
     // 2. Verify token
     if (!token) return next(new AppError("Please log in to get access", 401));
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const decoded = (await promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET
+    )) as DecodedToken;
 
     // 3. Check if user still exists
     // @ts-ignore
-    const currentUser = await User.findById(decoded.id);
+    const currentUser: UserDoc = await User.findById(decoded.id);
     if (!currentUser) return next(new AppError("User no longer exists", 401));
 
     // 4. Check if user changed password after JWT was issued
-    // @ts-ignore
     if (currentUser.changedPasswordAfter(decoded.iat))
       return next(new AppError("Password was recently changed", 401));
 
     // IF ALL PASSED --> GRANT ACCESS TO PROTECTED ROUTES
+    // @ts-ignore
     req.user = currentUser;
     next();
   }
