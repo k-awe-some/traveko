@@ -57,6 +57,13 @@ userSchema.pre("save", async function(this: UserDoc, next: NextFunction) {
   next();
 });
 
+userSchema.pre("save", function(this: UserDoc, next: NextFunction) {
+  if (!this.isModified("password") || this.isNew) return next();
+  // make sure password is always created after token has been sent (by - 1000 in timestamp)
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 // instance method
 // candidatePassword: original password, not hashed
 // userPassword: hashed
@@ -89,6 +96,7 @@ userSchema.methods.createPasswordResetToken = function(this: UserDoc) {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
+  console.log({ resetToken }, this.passwordResetToken);
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
