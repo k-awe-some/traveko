@@ -82,7 +82,7 @@ export const protect = catchAsync(
 
     // IF ALL PASSED --> GRANT ACCESS TO PROTECTED ROUTES
     // @ts-ignore
-    req.user = currentUser as UserDoc;
+    req.user = currentUser;
     next();
   }
 );
@@ -170,6 +170,31 @@ export const resetPassword = catchAsync(
     await user.save();
 
     // 3. Update passwordChangedAt property for user (done in userSchema)
+    // 4. Log user in, send jwt
+    const token = signToken(user._id);
+
+    res.status(200).json({
+      status: "success",
+      token
+    });
+  }
+);
+
+export const updatePassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // 1. Get user from collection
+    // @ts-ignore
+    const user: UserDoc = await User.findById(req.user.id).select("+password");
+
+    // 2. Check if POSTed password is correct
+    if (!(await user.correctPassword(req.body.passwordCurrent, user.password)))
+      return next(new AppError("Your current password is incorrect", 401));
+
+    // 3. Update password
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    await user.save();
+
     // 4. Log user in, send jwt
     const token = signToken(user._id);
 
