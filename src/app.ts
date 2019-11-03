@@ -2,6 +2,9 @@ import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+// @ts-ignore
+import xss from "xss-clean";
 
 import reviewRoutes from "./routes/reviewRoutes";
 import tourRoutes from "./routes/tourRoutes";
@@ -29,6 +32,12 @@ app.use("/api", limiter);
 
 // (body-parser) read data from body to req.body
 app.use(express.json({ limit: "10kb" }));
+
+// data sanitization against NoSQL query injection (filter out all $ signs from requests)
+app.use(mongoSanitize());
+
+// data sanitization agains XSS
+app.use(xss());
 
 // serve static fiels
 // app.use(express.static(`${__dirname}/public`))
