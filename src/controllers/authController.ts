@@ -9,6 +9,15 @@ import sendEmail from "../utils/sendEmail";
 import AppError from "../utils/AppError";
 import { UserDoc, DecodedToken } from "../models/models.types";
 
+const createSendToken = (user: UserDoc, statusCode: number, res: Response) => {
+  const token = signToken(user._id);
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: { user }
+  });
+};
+
 export const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const newUser = await User.create({
@@ -20,13 +29,7 @@ export const signup = catchAsync(
       role: req.body.role
     });
 
-    const token = signToken(newUser._id);
-
-    res.status(201).json({
-      status: "success",
-      token,
-      data: { user: newUser }
-    });
+    createSendToken(newUser, 201, res);
   }
 );
 
@@ -45,11 +48,7 @@ export const login = catchAsync(
       return next(new AppError("Incorrect email and/or password", 401));
 
     // 3. If everything's ok, send token to client
-    const token = signToken(user._id);
-    res.status(200).json({
-      status: "success",
-      token
-    });
+    createSendToken(user, 200, res);
   }
 );
 
@@ -171,12 +170,7 @@ export const resetPassword = catchAsync(
 
     // 3. Update passwordChangedAt property for user (done in userSchema)
     // 4. Log user in, send jwt
-    const token = signToken(user._id);
-
-    res.status(200).json({
-      status: "success",
-      token
-    });
+    createSendToken(user, 200, res);
   }
 );
 
@@ -196,11 +190,6 @@ export const updatePassword = catchAsync(
     await user.save();
 
     // 4. Log user in, send jwt
-    const token = signToken(user._id);
-
-    res.status(200).json({
-      status: "success",
-      token
-    });
+    createSendToken(user, 200, res);
   }
 );
