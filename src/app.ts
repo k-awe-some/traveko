@@ -5,6 +5,7 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 // @ts-ignore
 import xss from "xss-clean";
+import hpp from "hpp";
 
 import reviewRoutes from "./routes/reviewRoutes";
 import tourRoutes from "./routes/tourRoutes";
@@ -38,6 +39,20 @@ app.use(mongoSanitize());
 
 // data sanitization agains XSS
 app.use(xss());
+
+// prevent parameter pollution & allow certain duplicate fields
+app.use(
+  hpp({
+    whitelist: [
+      "duration",
+      "ratingsQuantity",
+      "ratingsAverage",
+      "maxGroupSize",
+      "difficulty",
+      "price"
+    ]
+  })
+);
 
 // serve static fiels
 // app.use(express.static(`${__dirname}/public`))
