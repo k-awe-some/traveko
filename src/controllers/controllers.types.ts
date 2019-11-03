@@ -11,3 +11,9 @@ export interface Err extends AppError {
   errmsg?: string;
   errors?: any[];
 }
+
+export interface CookieOptions {
+  expires: Date;
+  httpOnly: boolean;
+  secure?: boolean;
+}

@@ -8,9 +8,23 @@ import signToken from "../utils/signToken";
 import sendEmail from "../utils/sendEmail";
 import AppError from "../utils/AppError";
 import { UserDoc, DecodedToken } from "../models/models.types";
+import { CookieOptions } from "./controllers.types";
 
 const createSendToken = (user: UserDoc, statusCode: number, res: Response) => {
   const token = signToken(user._id);
+  const cookieOptions: CookieOptions = {
+    expires: new Date(
+      // @ts-ignore
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true
+  };
+
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+  res.cookie("jwt", token, cookieOptions);
+  // remove password from outputs
+  user.password = undefined;
+
   res.status(statusCode).json({
     status: "success",
     token,
