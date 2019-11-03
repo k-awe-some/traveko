@@ -7,6 +7,7 @@ import {
   resetPassword,
   updatePassword
 } from "../controllers/authController";
+import { updateMe } from "../controllers/userController";
 
 // @ts-ignore
 const userRoutes = app => {
@@ -17,6 +18,8 @@ const userRoutes = app => {
   app.patch("/api/v1/users/resetPassword/:token", resetPassword);
 
   app.patch("/api/v1/users/updateMyPassword", protect, updatePassword);
+
+  app.patch("/api/v1/users/updateMe", protect, updateMe);
 
   app.route("/api/v1/users").get(getAllUsers);
 

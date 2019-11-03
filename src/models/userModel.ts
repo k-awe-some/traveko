@@ -80,6 +80,7 @@ userSchema.methods.changedPasswordAfter = function(
 ) {
   if (this.passwordChangedAt) {
     const passwordChangedTimestamp = parseInt(
+      // @ts-ignore
       this.passwordChangedAt.getTime() / 1000,
       10
     );

@@ -8,6 +8,18 @@ import AppError from "../utils/AppError";
 //   fs.readFileSync(`${__dirname}/../../dev-data/data/users.json`, encodeURI(""))
 // );
 
+const filterObject = (
+  obj: Request["body"],
+  ...allowedFields: Array<string>
+) => {
+  let newObj = {};
+  Object.keys(obj).forEach(el => {
+    // @ts-ignore
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
+
 export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const users = await User.find();
 
@@ -28,5 +40,37 @@ export const getUser = catchAsync(
           data: { user }
         })
       : next(new AppError("No user found with that ID", 404));
+  }
+);
+
+export const updateMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.password || req.body.passwordConfirm)
+      return next(
+        new AppError(
+          "This route is not for password updates, please use /updateMyPassword.",
+          400
+        )
+      );
+
+    // Filter out unwanted field names that are not allowed to be updated
+    const filteredBody = filterObject(req.body, "name", "email");
+
+    const updatedUser = await User.findByIdAndUpdate(
+      // @ts-ignore
+      req.user.id,
+      filteredBody,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        user: updatedUser
+      }
+    });
   }
 );
