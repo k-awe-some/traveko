@@ -7,7 +7,7 @@ import {
   resetPassword,
   updatePassword
 } from "../controllers/authController";
-import { updateMe } from "../controllers/userController";
+import { updateMe, deleteMe } from "../controllers/userController";
 
 // @ts-ignore
 const userRoutes = app => {
@@ -20,6 +20,7 @@ const userRoutes = app => {
   app.patch("/api/v1/users/updateMyPassword", protect, updatePassword);
 
   app.patch("/api/v1/users/updateMe", protect, updateMe);
+  app.delete("/api/v1/users/deleteMe", protect, deleteMe);
 
   app.route("/api/v1/users").get(getAllUsers);
 

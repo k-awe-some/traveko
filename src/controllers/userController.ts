@@ -74,3 +74,19 @@ export const updateMe = catchAsync(
     });
   }
 );
+
+export const deleteMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // not deleting user, only marking user as inactive
+    await User.findByIdAndUpdate(
+      // @ts-ignore
+      req.user.id,
+      { active: false }
+    );
+
+    res.status(204).json({
+      status: "success",
+      data: null
+    });
+  }
+);
