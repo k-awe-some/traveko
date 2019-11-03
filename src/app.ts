@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
 import reviewRoutes from "./routes/reviewRoutes";
 import tourRoutes from "./routes/tourRoutes";
@@ -8,11 +9,17 @@ import unhandledRoutes from "./routes/unhandledRoutes";
 
 const app = express();
 
-/*** MIDDLEWARES ***/
+/*** GLOBAL MIDDLEWARES ***/
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+const limiter = rateLimit({
+  max: 500,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again in an hour."
+});
+app.use("/api", limiter);
 app.use(express.json());
 
 /*** ROUTE HANLDERS ***/
