@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { NextFunction } from "express";
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -27,6 +28,9 @@ const reviewSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "A review must belong to a user"]
+    },
+    __v: {
+      select: false
     }
   },
   {
@@ -34,6 +38,17 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
+reviewSchema.pre(/^find/, function(next: NextFunction) {
+  this.populate({
+    path: "forTour",
+    select: "name"
+  }).populate({
+    path: "writtenBy",
+    select: "name"
+  });
+  next();
+});
 
 const Review = mongoose.model("Review", reviewSchema);
 
