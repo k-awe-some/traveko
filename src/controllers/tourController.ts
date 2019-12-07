@@ -41,7 +41,7 @@ export const getAllTours = catchAsync(
 
 export const getTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findById(req.params.id);
+    const tour = await Tour.findById(req.params.id).populate("reviews");
 
     tour
       ? res.status(200).json({

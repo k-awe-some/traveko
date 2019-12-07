@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { NextFunction } from "express";
 
+import { ReviewDoc } from "./models.types";
+
 const reviewSchema = new mongoose.Schema(
   {
     review: {
@@ -39,11 +41,9 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-reviewSchema.pre(/^find/, function(next: NextFunction) {
+// @ts-ignore
+reviewSchema.pre(/^find/, function(this: ReviewDoc, next: NextFunction) {
   this.populate({
-    path: "forTour",
-    select: "name"
-  }).populate({
     path: "writtenBy",
     select: "name"
   });

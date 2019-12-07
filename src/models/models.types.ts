@@ -26,3 +26,5 @@ export interface DecodedToken extends UserDoc {
   iat: number;
   exp: number;
 }
+
+export interface ReviewDoc extends Document {}

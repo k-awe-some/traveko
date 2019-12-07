@@ -129,6 +129,12 @@ tourSchema.virtual("durationWeeks").get(function(this: TourDoc) {
   return this.duration / 7;
 });
 
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "forTour",
+  localField: "_id"
+});
+
 // Mongoose Middlewares: Document
 // pre save hook: runs before .save() and .create()
 tourSchema.pre("save", function(this: TourDoc, next: NextFunction): void {
