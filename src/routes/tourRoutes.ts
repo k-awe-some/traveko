@@ -9,6 +9,7 @@ import {
   getMonthlyPlan
 } from "../controllers/tourController";
 import { protect, restrictedTo } from "../controllers/authController";
+import { createReview } from "../controllers/reviewController";
 
 // @ts-ignore
 const tourRoutes = app => {
@@ -29,6 +30,10 @@ const tourRoutes = app => {
     .get(getTour)
     .patch(updateTour)
     .delete(protect, restrictedTo("admin", "lead-guide"), deleteTour);
+
+  app
+    .route("/api/v1/tours/:id/reviews")
+    .post(protect, restrictedTo("user"), createReview);
 };
 
 export default tourRoutes;

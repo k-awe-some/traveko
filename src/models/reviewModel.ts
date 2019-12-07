@@ -32,6 +32,7 @@ const reviewSchema = new mongoose.Schema(
       required: [true, "A review must belong to a user"]
     },
     __v: {
+      type: Number,
       select: false
     }
   },

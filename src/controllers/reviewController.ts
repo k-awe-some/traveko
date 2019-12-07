@@ -33,6 +33,10 @@ export const getReview = catchAsync(
 
 export const createReview = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.forTour) req.body.forTour = req.params.id;
+    // @ts-ignore
+    if (!req.body.writtenBy) req.body.writtenBy = req.user.id;
+
     const newReview = await Review.create(req.body);
 
     res.status(201).json({
