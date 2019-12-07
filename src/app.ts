@@ -9,7 +9,7 @@ import hpp from "hpp";
 
 import reviewRouter from "./routes/reviewRoutes";
 import tourRouter from "./routes/tourRoutes";
-import userRoutes from "./routes/userRoutes";
+import userRouter from "./routes/userRoutes";
 import unhandledRoutes from "./routes/unhandledRoutes";
 
 const app = express();
@@ -60,7 +60,7 @@ app.use(
 /*** ROUTE HANLDERS ***/
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/tours", tourRouter);
-userRoutes(app);
+app.use("/api/v1/users", userRouter);
 unhandledRoutes(app);
 
 export default app;

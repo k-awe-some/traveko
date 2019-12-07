@@ -1,30 +1,24 @@
-import { getAllUsers, getUser } from "../controllers/userController";
-import {
-  signup,
-  login,
-  protect,
-  forgotPassword,
-  resetPassword,
-  updatePassword
-} from "../controllers/authController";
-import { updateMe, deleteMe } from "../controllers/userController";
+import express from "express";
+const router = express.Router();
 
-// @ts-ignore
-const userRoutes = app => {
-  app.post("/api/v1/users/signup", signup);
-  app.post("/api/v1/users/login", login);
+import * as authController from "../controllers/authController";
+import * as userController from "../controllers/userController";
 
-  app.post("/api/v1/users/forgotPassword", forgotPassword);
-  app.patch("/api/v1/users/resetPassword/:token", resetPassword);
+router.post("/signup", authController.signup);
+router.post("/login", authController.login);
 
-  app.patch("/api/v1/users/updateMyPassword", protect, updatePassword);
+router.post("/forgotPassword", authController.forgotPassword);
+router.patch("/resetPassword/:token", authController.resetPassword);
+router.patch(
+  "/updateMyPassword",
+  authController.protect,
+  authController.updatePassword
+);
 
-  app.patch("/api/v1/users/updateMe", protect, updateMe);
-  app.delete("/api/v1/users/deleteMe", protect, deleteMe);
+router.patch("/updateMe", authController.protect, userController.updateMe);
+router.delete("/deleteMe", authController.protect, userController.deleteMe);
 
-  app.route("/api/v1/users").get(getAllUsers);
+router.get("/", userController.getAllUsers);
+router.get("/:id", userController.getUser);
 
-  app.route("/api/v1/users/:id").get(getUser);
-};
-
-export default userRoutes;
+export default router;
