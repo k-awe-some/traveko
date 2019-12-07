@@ -10,7 +10,9 @@ import hpp from "hpp";
 import reviewRouter from "./routes/reviewRoutes";
 import tourRouter from "./routes/tourRoutes";
 import userRouter from "./routes/userRoutes";
-import unhandledRoutes from "./routes/unhandledRoutes";
+
+import AppError from "./utils/AppError";
+import { globalErrorHandler } from "./controllers/errorController";
 
 const app = express();
 
@@ -54,13 +56,18 @@ app.use(
   })
 );
 
-// serve static fiels
+// serve static fields
 // app.use(express.static(`${__dirname}/public`))
 
 /*** ROUTE HANLDERS ***/
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
-unhandledRoutes(app);
+
+// handle non-existing routes
+app.all("*", (req: Request, res: Response, next: NextFunction) =>
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404))
+);
+app.use(globalErrorHandler);
 
 export default app;
