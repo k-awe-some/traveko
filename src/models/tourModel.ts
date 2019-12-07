@@ -110,7 +110,12 @@ const tourSchema = new mongoose.Schema(
         day: Number
       }
     ],
-    guides: [{ type: mongoose.Schema.ObjectId, ref: "User" }]
+    guides: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ]
   },
   { toJSON: { virtuals: true } }
 );
@@ -137,14 +142,21 @@ tourSchema.pre("save", function(this: TourDoc, next: NextFunction): void {
 //   next();
 // });
 
-// Child referencing
-
 // // Embedding
 // tourSchema.pre("save", async function(this: TourDoc, next: NextFunction) {
 //   this.guides = await Promise.all(
 //     this.guides.map(async (id: string) => await User.findById(id))
 //   );
 // });
+
+// Child referencing
+tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction) {
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt"
+  });
+  next();
+});
 
 // Mongoose Middlewares: Query
 tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction): void {
