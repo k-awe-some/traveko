@@ -3,6 +3,7 @@ import { NextFunction } from "express";
 import slugify from "slugify";
 import validator from "validator";
 import { TourDoc } from "./models.types";
+import User from "./userModel";
 
 const tourSchema = new mongoose.Schema(
   {
@@ -84,7 +85,32 @@ const tourSchema = new mongoose.Schema(
     secretTour: {
       type: Boolean,
       default: false
-    }
+    },
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"]
+      },
+      coordinates: [Number],
+      address: String,
+      description: String
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"]
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number
+      }
+    ],
+    guides: Array
   },
   { toJSON: { virtuals: true } }
 );
@@ -110,6 +136,13 @@ tourSchema.pre("save", function(this: TourDoc, next: NextFunction): void {
 //   console.log(doc);
 //   next();
 // });
+
+// Embedding
+tourSchema.pre("save", async function(this: TourDoc, next: NextFunction) {
+  this.guides = await Promise.all(
+    this.guides.map(async (id: string) => await User.findById(id))
+  );
+});
 
 // Mongoose Middlewares: Query
 tourSchema.pre(/^find/, function(this: TourDoc, next: NextFunction): void {

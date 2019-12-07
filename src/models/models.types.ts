@@ -6,6 +6,7 @@ export interface TourDoc extends Document {
   price: number;
   duration: number;
   start: number;
+  guides: any;
 }
 
 export interface UserDoc extends Document {
