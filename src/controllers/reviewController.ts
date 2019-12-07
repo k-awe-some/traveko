@@ -1,33 +1,43 @@
 import fs from "fs";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-const reviews = JSON.parse(
-  fs.readFileSync(
-    `${__dirname}/../../dev-data/data/reviews.json`,
-    encodeURI("")
-  )
+import Review from "../models/reviewModel";
+
+import catchAsync from "../utils/catchAsync";
+import AppError from "../utils/AppError";
+
+export const getAllReviews = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const reviews = await Review.find();
+
+    res.status(200).json({
+      status: "success",
+      results: reviews.length,
+      data: { reviews }
+    });
+  }
 );
 
-export const getAllReviews = (req: Request, res: Response) =>
-  res.status(200).json({
-    status: "success",
-    results: reviews.length,
-    data: { reviews }
-  });
+export const getReview = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const review = await Review.findById(req.params.id);
 
-export const getReview = (req: Request, res: Response) => {
-  const id: string = req.params.id;
-  const review: object = reviews.find(
-    (review: any): boolean => review._id === id
-  );
+    if (!review) return next(new AppError("No review found with that ID", 404));
 
-  review
-    ? res.status(200).json({
-        status: "success",
-        data: { review }
-      })
-    : res.status(404).json({
-        status: "failure",
-        message: "Invalid ID"
-      });
-};
+    res.status(200).json({
+      status: "success",
+      data: { review }
+    });
+  }
+);
+
+export const createReview = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const newReview = await Review.create(req.body);
+
+    res.status(201).json({
+      status: "success",
+      data: { review: newReview }
+    });
+  }
+);

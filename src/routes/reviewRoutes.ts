@@ -1,8 +1,15 @@
-import { getAllReviews, getReview } from "../controllers/reviewController";
+import {
+  getAllReviews,
+  getReview,
+  createReview
+} from "../controllers/reviewController";
+import { protect, restrictedTo } from "../controllers/authController";
 
 const reviewRoutes = (app: any) => {
-  app.get("/api/v1/reviews", getAllReviews);
-  app.get("/api/v1/reviews/:id", getReview);
+  app
+    .route("/api/v1/reviews/")
+    .get(getAllReviews)
+    .post(protect, restrictedTo("user"), createReview);
 };
 
 export default reviewRoutes;
