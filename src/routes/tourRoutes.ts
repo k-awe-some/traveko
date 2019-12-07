@@ -4,6 +4,10 @@ const router = express.Router();
 import * as tourController from "../controllers/tourController";
 import * as authController from "../controllers/authController";
 import * as reviewController from "../controllers/reviewController";
+import reviewRouter from "./reviewRoutes";
+
+// redirect this route pattern to reviewRouter
+router.use("/:id/reviews", reviewRouter);
 
 // aliases
 router.get(
