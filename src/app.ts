@@ -8,7 +8,7 @@ import xss from "xss-clean";
 import hpp from "hpp";
 
 import reviewRoutes from "./routes/reviewRoutes";
-import tourRoutes from "./routes/tourRoutes";
+import tourRouter from "./routes/tourRoutes";
 import userRoutes from "./routes/userRoutes";
 import unhandledRoutes from "./routes/unhandledRoutes";
 
@@ -59,7 +59,7 @@ app.use(
 
 /*** ROUTE HANLDERS ***/
 reviewRoutes(app);
-tourRoutes(app);
+app.use("/api/v1/tours", tourRouter);
 userRoutes(app);
 unhandledRoutes(app);
 

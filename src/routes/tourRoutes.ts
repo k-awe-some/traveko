@@ -1,39 +1,26 @@
-import {
-  aliasTopTours,
-  getAllTours,
-  getTour,
-  createTour,
-  updateTour,
-  deleteTour,
-  getTourStats,
-  getMonthlyPlan
-} from "../controllers/tourController";
-import { protect, restrictedTo } from "../controllers/authController";
-import { createReview } from "../controllers/reviewController";
+import express from "express";
+const router = express.Router();
 
-// @ts-ignore
-const tourRoutes = app => {
-  // aliases
-  app.route("/api/v1/tours/top-5-tours").get(aliasTopTours, getAllTours);
+import * as tourController from "../controllers/tourController";
+import * as authController from "../controllers/authController";
+import * as reviewController from "../controllers/reviewController";
 
-  // stats
-  app.route("/api/v1/tours/tour-stats").get(getTourStats);
-  app.route("/api/v1/tours/monthly-plan/:year").get(getMonthlyPlan);
+// aliases
+router.get(
+  "/top-5-tours",
+  tourController.aliasTopTours,
+  tourController.getAllTours
+);
 
-  app
-    .route("/api/v1/tours")
-    .get(protect, getAllTours)
-    .post(createTour);
+// stats
+router.get("/tour-stats", tourController.getTourStats);
+router.get("/monthly-plan/:year", tourController.getMonthlyPlan);
 
-  app
-    .route("/api/v1/tours/:id")
-    .get(getTour)
-    .patch(updateTour)
-    .delete(protect, restrictedTo("admin", "lead-guide"), deleteTour);
+router
+  .route("/")
+  .get(tourController.getAllTours)
+  .post(tourController.createTour);
 
-  app
-    .route("/api/v1/tours/:id/reviews")
-    .post(protect, restrictedTo("user"), createReview);
-};
+router.get("/:id", tourController.getTour);
 
-export default tourRoutes;
+export default router;
