@@ -1,15 +1,16 @@
-import {
-  getAllReviews,
-  getReview,
-  createReview
-} from "../controllers/reviewController";
-import { protect, restrictedTo } from "../controllers/authController";
+import express from "express";
+const router = express.Router();
 
-const reviewRoutes = (app: any) => {
-  app
-    .route("/api/v1/reviews/")
-    .get(getAllReviews)
-    .post(protect, restrictedTo("user"), createReview);
-};
+import * as authController from "../controllers/authController";
+import * as reviewController from "../controllers/reviewController";
 
-export default reviewRoutes;
+router
+  .route("/")
+  .get(reviewController.getAllReviews)
+  .post(
+    authController.protect,
+    authController.restrictedTo("user"),
+    reviewController.createReview
+  );
+
+export default router;

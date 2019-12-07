@@ -7,7 +7,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
 import hpp from "hpp";
 
-import reviewRoutes from "./routes/reviewRoutes";
+import reviewRouter from "./routes/reviewRoutes";
 import tourRouter from "./routes/tourRoutes";
 import userRoutes from "./routes/userRoutes";
 import unhandledRoutes from "./routes/unhandledRoutes";
@@ -58,7 +58,7 @@ app.use(
 // app.use(express.static(`${__dirname}/public`))
 
 /*** ROUTE HANLDERS ***/
-reviewRoutes(app);
+app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/tours", tourRouter);
 userRoutes(app);
 unhandledRoutes(app);
