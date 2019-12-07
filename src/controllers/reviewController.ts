@@ -8,7 +8,10 @@ import AppError from "../utils/AppError";
 
 export const getAllReviews = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const reviews = await Review.find();
+    let filter = {};
+    if (req.params.id) filter = { forTour: req.params.id };
+
+    const reviews = await Review.find(filter);
 
     res.status(200).json({
       status: "success",
