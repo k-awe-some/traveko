@@ -1,6 +1,9 @@
 import fs from "fs";
 import { Request, Response, NextFunction } from "express";
+
 import User from "../models/userModel";
+import * as factory from "./handlerFactory";
+
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 
@@ -90,3 +93,5 @@ export const deleteMe = catchAsync(
     });
   }
 );
+
+export const deleteUser = factory.deleteOne(User);

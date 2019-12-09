@@ -25,6 +25,9 @@ router
   .get(tourController.getAllTours)
   .post(tourController.createTour);
 
-router.get("/:id", tourController.getTour);
+router
+  .route("/:id")
+  .get(tourController.getTour)
+  .delete(tourController.deleteTour);
 
 export default router;

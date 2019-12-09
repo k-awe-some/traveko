@@ -5,6 +5,7 @@ import APIFeatures from "../utils/APIFeatures";
 import AppError from "../utils/AppError";
 import { Err } from "./controllers.types";
 import catchAsync from "../utils/catchAsync";
+import * as factory from "./handlerFactory";
 
 export const aliasTopTours = (
   req: Request,
@@ -79,18 +80,7 @@ export const updateTour = catchAsync(
   }
 );
 
-// DELETE requests
-export const deleteTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findByIdAndDelete(req.params.id);
-    tour
-      ? res.status(204).json({
-          status: "success",
-          data: null
-        })
-      : next(new AppError("No tour found with that ID", 404));
-  }
-);
+export const deleteTour = factory.deleteOne(Tour);
 
 // AGGREGATION PIPELINE
 export const getTourStats = catchAsync(

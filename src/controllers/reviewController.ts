@@ -2,6 +2,7 @@ import fs from "fs";
 import { Request, Response, NextFunction } from "express";
 
 import Review from "../models/reviewModel";
+import * as factory from "./handlerFactory";
 
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
@@ -48,3 +49,5 @@ export const createReview = catchAsync(
     });
   }
 );
+
+export const deleteReview = factory.deleteOne(Review);

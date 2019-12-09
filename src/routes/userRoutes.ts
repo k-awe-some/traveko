@@ -19,6 +19,9 @@ router.patch("/updateMe", authController.protect, userController.updateMe);
 router.delete("/deleteMe", authController.protect, userController.deleteMe);
 
 router.get("/", userController.getAllUsers);
-router.get("/:id", userController.getUser);
+router
+  .route("/:id")
+  .get(userController.getUser)
+  .delete(userController.deleteUser);
 
 export default router;
