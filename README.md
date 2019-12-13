@@ -35,7 +35,7 @@ A RESTful API application that allows CRUD (Create/Read/Update/Delete) operation
 
 All tour routes start with `http://localhost:3000/api/v1/tours`.
 
-_Note: Tour routes with pattern `http://localhost:3000/api/v1/tours/:id/reviews` will be redirected and matched with review routes._
+_Note: Tour routes with pattern `http://localhost:3000/api/v1/tours/:id/reviews` will be redirected and matched with [review routes](https://github.com/k-awe-some/traveko#reviews)._
 
 **GET:**
 
