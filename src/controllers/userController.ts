@@ -8,6 +8,7 @@ import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 
 export const getUser = factory.getOne(User);
+export const getAllUsers = factory.getAll(User);
 export const updateUser = factory.updateOne(User);
 export const deleteUser = factory.deleteOne(User);
 
@@ -22,16 +23,6 @@ const filterObject = (
   });
   return newObj;
 };
-
-export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: "success",
-    results: users.length,
-    data: { users }
-  });
-});
 
 export const updateMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

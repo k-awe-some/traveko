@@ -6,10 +6,10 @@ import { Err } from "./controllers.types";
 import * as factory from "./handlerFactory";
 
 import catchAsync from "../utils/catchAsync";
-import AppError from "../utils/AppError";
-import APIFeatures from "../utils/APIFeatures";
+// import AppError from "../utils/AppError";
 
 export const getTour = factory.getOne(Tour, { path: "reviews" });
+export const getAllTours = factory.getAll(Tour);
 export const createTour = factory.createOne(Tour);
 export const updateTour = factory.updateOne(Tour);
 export const deleteTour = factory.deleteOne(Tour);
@@ -24,28 +24,6 @@ export const aliasTopTours = (
   req.query.fields = "name,price,ratingsAverage,summary,difficulty";
   next();
 };
-
-// GET requests
-export const getAllTours = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    // BUILDING QUERY (by chaining all the methods)
-    const features = new APIFeatures(Tour.find(), req.query)
-      .filter()
-      .sort()
-      .limit()
-      .paginate();
-
-    // EXECUTING QUERY
-    const tours = await features.query;
-
-    // SENDING RESPONSE
-    res.status(200).json({
-      status: "success",
-      results: tours.length,
-      data: { tours }
-    });
-  }
-);
 
 // AGGREGATION PIPELINE
 export const getTourStats = catchAsync(

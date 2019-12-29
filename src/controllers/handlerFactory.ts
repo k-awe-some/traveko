@@ -1,8 +1,8 @@
-import { Document } from "mongoose";
 import { Request, Response, NextFunction } from "express";
 
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
+import APIFeatures from "../utils/APIFeatures";
 
 export const getOne = (Model: any, populateOptions: any = null) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -15,6 +15,27 @@ export const getOne = (Model: any, populateOptions: any = null) =>
           data: doc
         })
       : next(new AppError("No document found with that ID", 404));
+  });
+
+export const getAll = (Model: any) =>
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    // ALLOWING NESTED GET REVIEWS ON TOUR
+    let filter = {};
+    if (req.params.id) filter = { forTour: req.params.id };
+    // BUILDING QUERY (by chaining all the methods)
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limit()
+      .paginate();
+    // EXECUTING QUERY
+    const docs = await features.query;
+    // SENDING RESPONSE
+    res.status(200).json({
+      status: "success",
+      results: docs.length,
+      data: docs
+    });
   });
 
 export const createOne = (Model: any) =>
