@@ -9,6 +9,7 @@ import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 import APIFeatures from "../utils/APIFeatures";
 
+export const createTour = factory.createOne(Tour);
 export const updateTour = factory.updateOne(Tour);
 export const deleteTour = factory.deleteOne(Tour);
 
@@ -55,17 +56,6 @@ export const getTour = catchAsync(
           data: { tour }
         })
       : next(new AppError("No tour found with that ID", 404));
-  }
-);
-
-// POST requests
-export const createTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const newTour = await Tour.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: { tour: newTour }
-    });
   }
 );
 
