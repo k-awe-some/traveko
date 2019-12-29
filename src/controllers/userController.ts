@@ -56,6 +56,11 @@ export const updateMe = catchAsync(
   }
 );
 
+export const getMe = (req: Request, res: Response, next: NextFunction) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 export const deleteMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // not deleting user, only marking user as inactive
