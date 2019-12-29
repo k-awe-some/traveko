@@ -7,6 +7,9 @@ import * as factory from "./handlerFactory";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 
+export const updateReview = factory.updateOne(Review);
+export const deleteReview = factory.deleteOne(Review);
+
 export const getAllReviews = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     let filter = {};
@@ -49,5 +52,3 @@ export const createReview = catchAsync(
     });
   }
 );
-
-export const deleteReview = factory.deleteOne(Review);

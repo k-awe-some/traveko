@@ -14,3 +14,17 @@ export const deleteOne = (Model: any) =>
         })
       : next(new AppError("No document found with that ID", 404));
   });
+
+export const updateOne = (Model: any) =>
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    doc
+      ? res.status(200).json({
+          status: "success",
+          data: doc
+        })
+      : next(new AppError("No document found with that ID", 404));
+  });

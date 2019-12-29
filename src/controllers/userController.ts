@@ -7,9 +7,8 @@ import * as factory from "./handlerFactory";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 
-// const users = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../../dev-data/data/users.json`, encodeURI(""))
-// );
+export const updateUser = factory.updateOne(User);
+export const deleteUser = factory.deleteOne(User);
 
 const filterObject = (
   obj: Request["body"],
@@ -93,5 +92,3 @@ export const deleteMe = catchAsync(
     });
   }
 );
-
-export const deleteUser = factory.deleteOne(User);

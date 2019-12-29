@@ -1,11 +1,16 @@
 import fs from "fs";
 import { Request, Response, NextFunction } from "express";
+
 import Tour from "../models/tourModel";
-import APIFeatures from "../utils/APIFeatures";
-import AppError from "../utils/AppError";
 import { Err } from "./controllers.types";
-import catchAsync from "../utils/catchAsync";
 import * as factory from "./handlerFactory";
+
+import catchAsync from "../utils/catchAsync";
+import AppError from "../utils/AppError";
+import APIFeatures from "../utils/APIFeatures";
+
+export const updateTour = factory.updateOne(Tour);
+export const deleteTour = factory.deleteOne(Tour);
 
 export const aliasTopTours = (
   req: Request,
@@ -63,24 +68,6 @@ export const createTour = catchAsync(
     });
   }
 );
-
-// PATCH requests
-export const updateTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
-    tour
-      ? res.status(200).json({
-          status: "success",
-          data: { tour }
-        })
-      : next(new AppError("No tour found with that ID", 404));
-  }
-);
-
-export const deleteTour = factory.deleteOne(Tour);
 
 // AGGREGATION PIPELINE
 export const getTourStats = catchAsync(
