@@ -4,6 +4,19 @@ import { Request, Response, NextFunction } from "express";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 
+export const getOne = (Model: any, populateOptions: any = null) =>
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    let query = Model.findById(req.params.id);
+    if (populateOptions) query = query.populate(populateOptions);
+    const doc = await query;
+    doc
+      ? res.status(200).json({
+          status: "success",
+          data: doc
+        })
+      : next(new AppError("No document found with that ID", 404));
+  });
+
 export const createOne = (Model: any) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.create(req.body);

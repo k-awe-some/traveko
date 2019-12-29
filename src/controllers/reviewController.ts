@@ -19,6 +19,7 @@ export const setTourAndUserIds = (
   next();
 };
 
+export const getReview = factory.getOne(Review);
 export const createReview = factory.createOne(Review);
 export const updateReview = factory.updateOne(Review);
 export const deleteReview = factory.deleteOne(Review);
@@ -34,19 +35,6 @@ export const getAllReviews = catchAsync(
       status: "success",
       results: reviews.length,
       data: { reviews }
-    });
-  }
-);
-
-export const getReview = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const review = await Review.findById(req.params.id);
-
-    if (!review) return next(new AppError("No review found with that ID", 404));
-
-    res.status(200).json({
-      status: "success",
-      data: { review }
     });
   }
 );

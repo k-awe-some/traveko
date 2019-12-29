@@ -9,6 +9,7 @@ import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 import APIFeatures from "../utils/APIFeatures";
 
+export const getTour = factory.getOne(Tour, { path: "reviews" });
 export const createTour = factory.createOne(Tour);
 export const updateTour = factory.updateOne(Tour);
 export const deleteTour = factory.deleteOne(Tour);
@@ -43,19 +44,6 @@ export const getAllTours = catchAsync(
       results: tours.length,
       data: { tours }
     });
-  }
-);
-
-export const getTour = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const tour = await Tour.findById(req.params.id).populate("reviews");
-
-    tour
-      ? res.status(200).json({
-          status: "success",
-          data: { tour }
-        })
-      : next(new AppError("No tour found with that ID", 404));
   }
 );
 

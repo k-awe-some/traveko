@@ -7,6 +7,7 @@ import * as factory from "./handlerFactory";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/AppError";
 
+export const getUser = factory.getOne(User);
 export const updateUser = factory.updateOne(User);
 export const deleteUser = factory.deleteOne(User);
 
@@ -31,19 +32,6 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     data: { users }
   });
 });
-
-export const getUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findById(req.params.id);
-
-    user
-      ? res.status(200).json({
-          status: "success",
-          data: { user }
-        })
-      : next(new AppError("No user found with that ID", 404));
-  }
-);
 
 export const updateMe = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
