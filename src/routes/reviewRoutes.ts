@@ -4,12 +4,13 @@ const router = express.Router({ mergeParams: true });
 import * as authController from "../controllers/authController";
 import * as reviewController from "../controllers/reviewController";
 
+router.use(authController.protect);
+
 // all redirected routes will be matched with this route
 router
   .route("/")
   .get(reviewController.getAllReviews)
   .post(
-    authController.protect,
     authController.restrictedTo("user"),
     reviewController.setTourAndUserIds,
     reviewController.createReview
@@ -18,7 +19,13 @@ router
 router
   .route("/:id")
   .get(reviewController.getReview)
-  .patch(reviewController.updateReview)
-  .delete(reviewController.deleteReview);
+  .patch(
+    authController.restrictedTo("user", "admin"),
+    reviewController.updateReview
+  )
+  .delete(
+    authController.restrictedTo("user", "admin"),
+    reviewController.deleteReview
+  );
 
 export default router;

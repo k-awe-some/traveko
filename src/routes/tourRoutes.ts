@@ -18,17 +18,34 @@ router.get(
 
 // stats
 router.get("/tour-stats", tourController.getTourStats);
-router.get("/monthly-plan/:year", tourController.getMonthlyPlan);
+router.get(
+  "/monthly-plan/:year",
+  authController.protect,
+  authController.restrictedTo("admin", "lead-guide", "guide"),
+  tourController.getMonthlyPlan
+);
 
 router
   .route("/")
   .get(tourController.getAllTours)
-  .post(tourController.createTour);
+  .post(
+    authController.protect,
+    authController.restrictedTo("admin", "lead-guide"),
+    tourController.createTour
+  );
 
 router
   .route("/:id")
   .get(tourController.getTour)
-  .patch(tourController.updateTour)
-  .delete(tourController.deleteTour);
+  .patch(
+    authController.protect,
+    authController.restrictedTo("admin", "lead-guide"),
+    tourController.updateTour
+  )
+  .delete(
+    authController.protect,
+    authController.restrictedTo("admin", "lead-guide"),
+    tourController.deleteTour
+  );
 
 export default router;

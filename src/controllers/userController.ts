@@ -57,6 +57,7 @@ export const updateMe = catchAsync(
 );
 
 export const getMe = (req: Request, res: Response, next: NextFunction) => {
+  //@ts-ignore
   req.params.id = req.user.id;
   next();
 };
