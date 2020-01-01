@@ -29,6 +29,7 @@ export const getAll = (Model: any) =>
       .limit()
       .paginate();
     // EXECUTING QUERY
+    // const docs = await features.query.explain();
     const docs = await features.query;
     // SENDING RESPONSE
     res.status(200).json({
